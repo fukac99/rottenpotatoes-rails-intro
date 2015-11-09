@@ -24,7 +24,7 @@ class MoviesController < ApplicationController
       redirect_to :sort => sort and return
     end
     
-    @movies = Movie.find_all(ordering)
+    @movies = Movie.find(:all, ordering)
       
     
   end
