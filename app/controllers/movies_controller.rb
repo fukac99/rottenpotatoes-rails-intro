@@ -14,19 +14,20 @@ class MoviesController < ApplicationController
     sort = params[:sort] || session[:sort]
     case sort
     when 'title'
-      ordering,@title_header = {:order => :title}, 'hilite'
+      orderby = "title"
+      @title_header = 'hilite'
     when 'release_date'
-      ordering,@date_header = {:order => :release_date}, 'hilite'
+      orderby = "release_date"
+      @date_header = 'hilite'
+    else
+      orderby = ""
     end
-    
     if params[:sort] != session[:sort]
       session[:sort] = sort
       redirect_to :sort => sort and return
     end
     
-    @movies = Movie.find(:all, ordering)
-      
-    
+    @movies = Movie.order(orderby).all()
   end
 
   def new
