@@ -22,12 +22,26 @@ class MoviesController < ApplicationController
     else
       orderby = ""
     end
+    @all_ratings = Movie.get_ratings
+    @selected_ratings = params[:ratings] || session[:ratings] || {}
+    
     if params[:sort] != session[:sort]
       session[:sort] = sort
-      redirect_to :sort => sort and return
+      redirect_to :sort => sort, :ratings => @selected_ratings and return
     end
     
-    @movies = Movie.order(orderby).all()
+    if params[:ratings] != session[:ratings] and @selected_ratings != {}
+      session[:sort] = sort
+      session[:ratings] = @selected_ratings
+      redirect_to :sort => sort, :ratings => @selected_ratings and return
+    end
+
+    
+    if @selected_ratings == {}
+      @movies = Movie.order(orderby).all()
+    else
+      @movies = Movie.where(["rating IN (?)", @selected_ratings.keys]).order(orderby).all()
+    end
   end
 
   def new
